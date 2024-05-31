@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task List App</title>
+    <!-- <link rel="stylesheet" href="styles.css"> -->
+</head>
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+}
+
+header {
+    background: #50b3a2;
+    color: #fff;
+    padding-top: 30px;
+    min-height: 70px;
+    border-bottom: #e8491d 3px solid;
+}
+
+header h1 {
+    text-align: center;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+main {
+    margin: 20px 0;
+}
+
+button#createTaskButton, button#openFormButton {
+    display: block;
+    width: 150px;
+    margin: 20px auto;
+    background: #50b3a2;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button#createTaskButton:hover, button#openFormButton:hover {
+    background: #45a094;
+}
+
+.popup {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.popup-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.task-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.task-form label {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.task-form input, .task-form textarea, .task-form select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.task-form button {
+    margin-top: 20px;
+    background: #50b3a2;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.task-form button:hover {
+    background: #45a094;
+}
+
+.filters {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.filters label, .filters input, .filters select {
+    margin-right: 10px;
+}
+
+.task-list ul {
+    list-style: none;
+    padding: 0;
+}
+
+.task-list li {
+    background: #fff;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.task-list li:last-child {
+    border-bottom: none;
+}
+
+.task-list li.done {
+    text-decoration: line-through;
+    color: #888;
+}
+
+.task-list .task-actions button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.task-list .task-actions button:hover {
+    color: #50b3a2;
+}
+
+</style>
+<body>
+    <div class="container">
+        <header>
+            <h1>MY blog</h1>
+        </header>
+        <main>
+            <button id="openFormButton">Create blog</button>
+            
+            <div id="taskFormPopup" class="popup">
+                <div class="popup-content">
+                    <span id="closeFormButton" class="close">&times;</span>
+                    <h2>Create blog</h2>
+                    <form id="taskForm" class="task-form">
+                        <label for="title">Title:</label>
+                        <input type="text" id="title" name="title" required>
+                        
+                        <label for="description">Description:</label>
+                        <textarea id="description" name="description"></textarea>
+                        
+                        <label for="dueDate"> Date:</label>
+                        <input type="date" id="dueDate" name="dueDate">
+                        
+                        <label for="tags">Tags:</label>
+                        <input type="text" id="tags" name="tags">
+                        
+                        <label for="project">details:</label>
+                        <input type="text" id="project" name="project">
+                        
+                        <label for="priority">gerne:</label>
+                        <select id="priority" name="priority">
+                            <option value="Low">science</option>
+                            <option value="Medium">drama</option>
+                            <option value="High">music</option>
+                        </select>
+                        
+                        <label for="attachments">Attachments:</label>
+                        <input type="file" id="attachments" name="attachments" multiple>
+                        
+                        <button type="submit">Add Blog</button>
+                    </form>
+                </div>
+            </div>
+            
+            <section class="task-list">
+                <h2>Blogs</h2>
+                <div class="filters">
+                    <label for="filterPriority">Filter by gerne:</label>
+                    <select id="filterPriority">
+                        <option value="all">All</option>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                    </select>
+                    
+                    <label for="filterDueDate">Filter by  Date:</label>
+                    <input type="date" id="filterDueDate">
+                    
+                    <label for="searchTask">Search Blogs:</label>
+                    <input type="text" id="searchTask" placeholder="Search by title or description">
+                </div>
+                <ul id="taskList"></ul>
+            </section>
+        </main>
+    </div>
+    <script >
+        document.addEventListener('DOMContentLoaded', () => {
+    const taskForm = document.getElementById('taskForm');
+    const taskList = document.getElementById('taskList');
+    const filterPriority = document.getElementById('filterPriority');
+    const filterDueDate = document.getElementById('filterDueDate');
+    const searchTask = document.getElementById('searchTask');
+    const openFormButton = document.getElementById('openFormButton');
+    const taskFormPopup = document.getElementById('taskFormPopup');
+    const closeFormButton = document.getElementById('closeFormButton');
+
+    let tasks = [];
+
+    taskForm.addEventListener('submit', addTask);
+    filterPriority.addEventListener('change', renderTasks);
+    filterDueDate.addEventListener('change', renderTasks);
+    searchTask.addEventListener('input', renderTasks);
+    openFormButton.addEventListener('click', openFormPopup);
+    closeFormButton.addEventListener('click', closeFormPopup);
+    window.addEventListener('click', outsideClick);
+
+    function addTask(event) {
+        event.preventDefault();
+        
+        const task = {
+            id: Date.now(),
+            title: taskForm.title.value,
+            description: taskForm.description.value,
+            dueDate: taskForm.dueDate.value,
+            tags: taskForm.tags.value.split(',').map(tag => tag.trim()),
+            project: taskForm.project.value,
+            priority: taskForm.priority.value,
+            attachments: [...taskForm.attachments.files],
+            done: false,
+        };
+
+        tasks.push(task);
+        taskForm.reset();
+        closeFormPopup();
+        renderTasks();
+    }
+
+    function renderTasks() {
+        const filteredTasks = tasks.filter(task => {
+            const matchesPriority = filterPriority.value === 'all' || task.priority === filterPriority.value;
+            const matchesDueDate = !filterDueDate.value || new Date(task.dueDate).toDateString() === new Date(filterDueDate.value).toDateString();
+            const matchesSearch = task.title.includes(searchTask.value) || task.description.includes(searchTask.value);
+            return matchesPriority && matchesDueDate && matchesSearch;
+        });
+
+        taskList.innerHTML = '';
+        filteredTasks.forEach(task => {
+            const taskItem = document.createElement('li');
+            taskItem.className = task.done ? 'done' : '';
+
+            taskItem.innerHTML = `
+                <div>
+                    <h3>${task.title}</h3>
+                    <p>${task.description}</p>
+                    <p><strong>Due:</strong> ${new Date(task.dueDate).toLocaleString()}</p>
+                    <p><strong>Tags:</strong> ${task.tags.join(', ')}</p>
+                    <p><strong>Project:</strong> ${task.project}</p>
+                    <p><strong>Priority:</strong> ${task.priority}</p>
+                </div>
+                <div class="task-actions">
+                    <button onclick="toggleDone(${task.id})">✔️</button>
+                    <button onclick="deleteTask(${task.id})">🗑️</button>
+                </div>
+            `;
+
+            taskList.appendChild(taskItem);
+        });
+    }
+
+    window.toggleDone = function(id) {
+        tasks = tasks.map(task => task.id === id ? { ...task, done: !task.done } : task);
+        renderTasks();
+    };
+
+    window.deleteTask = function(id) {
+        tasks = tasks.filter(task => task.id !== id);
+        renderTasks();
+    };
+
+    function openFormPopup() {
+        taskFormPopup.style.display = 'block';
+    }
+
+    function closeFormPopup() {
+        taskFormPopup.style.display = 'none';
+    }
+
+    function outsideClick(event) {
+        if (event.target == taskFormPopup) {
+            closeFormPopup();
+        }
+    }
+});
+
+    </script>
+</body>
+</html>
